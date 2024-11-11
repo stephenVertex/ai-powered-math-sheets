@@ -404,3 +404,26 @@ button:hover {
     box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   }
 }
+
+.seed-display {
+  font-family: monospace;
+  background: #f1f5f9;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: #475569;
+  font-size: 0.9rem;
+}
+
+.seed-input {
+  width: 100px;
+  text-align: center;
+  font-family: monospace;
+}
+
+/* Update print styles for seed */
+@media print {
+  .seed-display {
+    background: none;
+    padding: 2px;
+  }
+}

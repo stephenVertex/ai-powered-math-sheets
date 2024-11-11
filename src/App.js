@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { generateProblems } from './utils/mathUtils';
+import React, { useState, useCallback } from 'react';
+import { generateProblems, generateSeed, createSeededRandom } from './utils/mathUtils';
 import './App.css';
 
 function App() {
@@ -7,10 +7,25 @@ function App() {
   const [problemType, setProblemType] = useState('fractionAddition');
   const [difficulty, setDifficulty] = useState('medium');
   const [studentName, setStudentName] = useState('');
+  const [seed, setSeed] = useState(generateSeed());
+  const [customSeed, setCustomSeed] = useState('');
 
-  const handleGenerateProblems = () => {
-    setProblems(generateProblems(10, problemType, difficulty));
-  };
+  const handleGenerateProblems = useCallback(() => {
+    let seedToUse;
+    
+    if (customSeed.length === 5) {
+      // Use the existing custom seed
+      seedToUse = parseInt(customSeed, 10);
+    } else {
+      // Generate a new seed
+      seedToUse = generateSeed();
+    }
+    
+    setSeed(seedToUse);
+    setCustomSeed(''); // Clear the seed input after generating problems
+    const rng = createSeededRandom(seedToUse);
+    setProblems(generateProblems(10, problemType, difficulty, rng));
+  }, [problemType, difficulty, customSeed]);
 
   const getOperationSymbol = (type) => {
     return type.includes('Addition') ? '+' : '×';
@@ -81,6 +96,14 @@ function App() {
       .replace('Multiplication', 'Multiplication');
   };
 
+  const handleSeedChange = (e) => {
+    const value = e.target.value.replace(/\D/g, '').slice(0, 5);
+    setCustomSeed(value);
+    if (value.length === 5) {
+      setSeed(parseInt(value, 10));
+    }
+  };
+
   return (
     <div className="App">
       <div className="no-print">
@@ -93,6 +116,15 @@ function App() {
             onChange={(e) => setStudentName(e.target.value)}
             placeholder="Student Name (optional)"
             className="control-select"
+          />
+
+          <input
+            type="text"
+            className="seed-input control-select"
+            placeholder="Seed # (optional)"
+            value={customSeed}
+            onChange={handleSeedChange}
+            maxLength={5}
           />
 
           <select 
@@ -128,6 +160,7 @@ function App() {
           <div className="print-only worksheet-header">
             <h1>Math Practice Worksheet</h1>
             <h2>{formatDrillType(problemType)} - {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</h2>
+            <p>Worksheet ID: <span className="seed-display">{seed}</span></p>
             <div className="student-info">
               <p>Name: {studentName ? <strong>{studentName}</strong> : "_____________________"}</p>
               <p>Date: <strong>{new Date().toLocaleDateString()}</strong></p>
@@ -149,7 +182,7 @@ function App() {
           <div className="print-only page-break"></div>
 
           <div className="answer-key">
-            <h2>Answer Key</h2>
+            <h2>Answer Key <span className="seed-display">ID: {seed}</span></h2>
             <div className="answers-grid">
               {problems.map((problem, index) => (
                 <div key={problem.id} className="answer-item">

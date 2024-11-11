@@ -35,17 +35,17 @@ const DIFFICULTY_CONFIGS = {
 };
 
 // Generate a random fraction based on difficulty
-const generateFraction = (difficulty = 'medium') => {
+const generateFraction = (difficulty = 'medium', rng) => {
   const config = DIFFICULTY_CONFIGS[difficulty].fractions;
-  const denominator = Math.floor(Math.random() * (config.maxDenominator - 1)) + 2;
-  const numerator = Math.floor(Math.random() * (denominator * config.maxNumeratorFactor)) + 1;
+  const denominator = rng.randInt(2, config.maxDenominator);
+  const numerator = rng.randInt(1, denominator * config.maxNumeratorFactor);
   return { numerator, denominator };
 };
 
 // Generate a random decimal based on difficulty
-const generateDecimal = (difficulty = 'medium') => {
+const generateDecimal = (difficulty = 'medium', rng) => {
   const config = DIFFICULTY_CONFIGS[difficulty].decimals;
-  const value = Math.random() * config.maxValue;
+  const value = rng.random() * config.maxValue;
   return Number(value.toFixed(config.maxDecimals));
 };
 
@@ -106,14 +106,14 @@ const multiplyDecimals = (decimal1, decimal2) => {
 };
 
 // Generate a set of problems
-export const generateProblems = (count = 10, problemType = 'fractionAddition', difficulty = 'medium') => {
+export const generateProblems = (count = 10, problemType = 'fractionAddition', difficulty = 'medium', rng) => {
   const problems = [];
   for (let i = 0; i < count; i++) {
     let problem = { id: i, difficulty, problemType };
 
     if (problemType.startsWith('fraction')) {
-      const fraction1 = generateFraction(difficulty);
-      const fraction2 = generateFraction(difficulty);
+      const fraction1 = generateFraction(difficulty, rng);
+      const fraction2 = generateFraction(difficulty, rng);
       const isAddition = problemType === 'fractionAddition';
       
       const rawResult = isAddition 
@@ -131,8 +131,8 @@ export const generateProblems = (count = 10, problemType = 'fractionAddition', d
         mixedAnswer: mixed
       };
     } else {
-      const decimal1 = generateDecimal(difficulty);
-      const decimal2 = generateDecimal(difficulty);
+      const decimal1 = generateDecimal(difficulty, rng);
+      const decimal2 = generateDecimal(difficulty, rng);
       const isAddition = problemType === 'decimalAddition';
       
       const answer = isAddition 
@@ -150,4 +150,30 @@ export const generateProblems = (count = 10, problemType = 'fractionAddition', d
     problems.push(problem);
   }
   return problems;
+};
+
+// Seeded random number generator
+class SeededRandom {
+  constructor(seed) {
+    this.seed = seed;
+  }
+
+  // Generate random number between 0 and 1
+  random() {
+    const x = Math.sin(this.seed++) * 10000;
+    return x - Math.floor(x);
+  }
+
+  // Generate random integer between min and max (inclusive)
+  randInt(min, max) {
+    return Math.floor(this.random() * (max - min + 1)) + min;
+  }
+}
+
+export const generateSeed = () => {
+  return Math.floor(10000 + Math.random() * 90000);
+};
+
+export const createSeededRandom = (seed) => {
+  return new SeededRandom(seed);
 }; 
