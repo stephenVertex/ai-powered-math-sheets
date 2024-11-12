@@ -35,13 +35,15 @@ function App() {
     if (problem.problemType.startsWith('fraction')) {
       return (
         <div className="fraction-problem">
-          <span className="fraction">
-            {problem.fraction1.numerator}/{problem.fraction1.denominator}
-          </span>
+          <div className="fraction">
+            <span className="numerator">{problem.fraction1.numerator}</span>
+            <span className="denominator">{problem.fraction1.denominator}</span>
+          </div>
           {' '}{getOperationSymbol(problem.problemType)}{' '}
-          <span className="fraction">
-            {problem.fraction2.numerator}/{problem.fraction2.denominator}
-          </span>
+          <div className="fraction">
+            <span className="numerator">{problem.fraction2.numerator}</span>
+            <span className="denominator">{problem.fraction2.denominator}</span>
+          </div>
           {' = '}
           <span className="answer">?</span>
         </div>
@@ -74,13 +76,23 @@ function App() {
       return (
         <>
           <p>
-            Improper fraction: {problem.answer.numerator}/{problem.answer.denominator}
+            Improper fraction:{' '}
+            <div className="fraction">
+              <span className="numerator">{problem.answer.numerator}</span>
+              <span className="denominator">{problem.answer.denominator}</span>
+            </div>
           </p>
           <p>
             Mixed number: {
               problem.mixedAnswer.numerator === 0 
                 ? problem.mixedAnswer.whole 
-                : `${problem.mixedAnswer.whole} ${problem.mixedAnswer.numerator}/${problem.mixedAnswer.denominator}`
+                : <>
+                    {problem.mixedAnswer.whole}{' '}
+                    <div className="fraction">
+                      <span className="numerator">{problem.mixedAnswer.numerator}</span>
+                      <span className="denominator">{problem.mixedAnswer.denominator}</span>
+                    </div>
+                  </>
             }
           </p>
         </>

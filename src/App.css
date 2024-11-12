@@ -85,6 +85,22 @@ button:hover {
 
 .fraction {
   display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  margin: 0 5px;
+}
+
+.fraction > span {
+  display: block;
+  padding: 0.2em;
+}
+
+.fraction span.numerator {
+  border-bottom: 2px solid currentColor;
+}
+
+.fraction span.denominator {
+  border-top: none;
 }
 
 .answer-key {
