@@ -130,6 +130,38 @@ export const generateProblems = (count = 10, problemType = 'fractionAddition', d
         answer: simplified,
         mixedAnswer: mixed
       };
+    } else if (problemType === 'multiplication') {
+      let factor1Range, factor2Range;
+      
+      switch (difficulty) {
+        case 'easy':
+          factor1Range = { min: 2, max: 9 };
+          factor2Range = { min: 2, max: 9 };
+          break;
+        case 'medium':
+          factor1Range = { min: 2, max: 12 };
+          factor2Range = { min: 2, max: 12 };
+          break;
+        case 'hard':
+          factor1Range = { min: 2, max: 20 };
+          factor2Range = { min: 2, max: 20 };
+          break;
+        default:
+          factor1Range = { min: 2, max: 12 };
+          factor2Range = { min: 2, max: 12 };
+      }
+
+      const factor1 = rng.randInt(factor1Range.min, factor1Range.max);
+      const factor2 = rng.randInt(factor2Range.min, factor2Range.max);
+      
+      problem = {
+        id: Math.floor(rng.random() * 1000000),
+        problemType: 'multiplication',
+        factor1,
+        factor2,
+        answer: factor1 * factor2,
+        difficulty
+      };
     } else {
       const decimal1 = generateDecimal(difficulty, rng);
       const decimal2 = generateDecimal(difficulty, rng);
@@ -176,4 +208,9 @@ export const generateSeed = () => {
 
 export const createSeededRandom = (seed) => {
   return new SeededRandom(seed);
+};
+
+// Add this near the top of the file with the other utility functions
+const generateId = () => {
+  return Math.random().toString(36).substr(2, 9);
 }; 

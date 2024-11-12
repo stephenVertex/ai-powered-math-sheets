@@ -46,6 +46,16 @@ function App() {
           <span className="answer">?</span>
         </div>
       );
+    } else if (problem.problemType === 'multiplication') {
+      return (
+        <div className="multiplication-problem">
+          {problem.factor1}
+          {' × '}
+          {problem.factor2}
+          {' = '}
+          <span className="answer">?</span>
+        </div>
+      );
     } else {
       return (
         <div className="decimal-problem">
@@ -74,6 +84,12 @@ function App() {
             }
           </p>
         </>
+      );
+    } else if (problem.problemType === 'multiplication') {
+      return (
+        <p>
+          Answer: {problem.answer}
+        </p>
       );
     } else {
       return (
@@ -136,6 +152,7 @@ function App() {
             <option value="fractionMultiplication">Fraction Multiplication</option>
             <option value="decimalAddition">Decimal Addition</option>
             <option value="decimalMultiplication">Decimal Multiplication</option>
+            <option value="multiplication">Multiplication</option>
           </select>
 
           <select

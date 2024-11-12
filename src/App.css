@@ -427,3 +427,8 @@ button:hover {
     padding: 2px;
   }
 }
+
+.multiplication-problem {
+  font-size: 1.5em;
+  margin: 10px 0;
+}
